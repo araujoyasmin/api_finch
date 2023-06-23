@@ -32,7 +32,6 @@ class UserController {
 
         $putJson = json_decode(file_get_contents('php://input'),true);
         $response = $this->userService->apiPut($param, $putJson);
-
         return $response;
     }
 

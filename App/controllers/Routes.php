@@ -20,6 +20,7 @@ class Routes{
 
     private $loginController;
     private $loginService;
+    private $secretKey = 'api_finch';
 
     public function __construct() {
         $this->loginService = new LoginService();
@@ -30,10 +31,7 @@ class Routes{
         if(isset($_GET['path'])){
             $path = explode("/", $_GET['path']);
         }else{
-            $error = [
-                'error' => 'invalid_route',
-                'message' => 'Rota invalida!'
-            ];
+            echo "Rota não informada!";exit;
         }
 
         $request = [];
@@ -49,6 +47,7 @@ class Routes{
         }else{
             if($authenticate = $this->loginController->checkAuth()){
                 $route = array_merge($request, $authenticate);
+                // print_r($route);exit;
                 $response_api = $this->getApi($route);
                 return $response_api;
             }else {
@@ -63,6 +62,8 @@ class Routes{
     }
 
     public function getApi($route){
+
+        // print_r($route);exit;
 
     $perfil = $route['perfil'];
     $method = $route['method'];
@@ -84,6 +85,7 @@ class Routes{
                         'controller' => 'ProjectController',
                         'action' => $route['method']
                     ],
+                   
                 ];
             break;
             case 'task':
@@ -91,7 +93,8 @@ class Routes{
                     '/task' => [
                         'controller' => 'TaskController',
                         'action' => $route['method']
-                    ],                   
+                    ],
+                   
                 ];
             break;
             case 'close-task':
@@ -99,7 +102,8 @@ class Routes{
                     '/task' => [
                         'controller' => 'TaskController',
                         'action' => $route['method']
-                    ],                   
+                    ],
+                   
                 ];
             break;
             case 'close-project':
@@ -107,7 +111,8 @@ class Routes{
                     '/task' => [
                         'controller' => 'ProjectController',
                         'action' => $route['method']
-                    ],                 
+                    ],
+                   
                 ];
             break;
             default:
@@ -121,7 +126,7 @@ class Routes{
 
     
        if(($method != 'GET' && $perfil == 1 && $router != 'close-task') || ($router == 'close-project' && $perfil == 1)){
-      
+        // echo "yasmin";exit;
             $error = [
                 'error' => 'invalid_access',
                 'message' => 'Seu perfil nao tem acesso a essa rota!'
@@ -136,6 +141,7 @@ class Routes{
                 if (method_exists($controller, $actionMethodName)) {
                     $response = $controller->$actionMethodName($route['param']);
                     return $response;
+
                 } else {
                     $error = [
                         'error' => 'invalid_method',

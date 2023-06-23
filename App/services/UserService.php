@@ -40,25 +40,43 @@ class UserService{
 
     public function apiPost($request){
       
+        if(isset($request['name']) && isset($request['email'])  && isset($request['cpf']) ){
+            $name = $request['name'];
+            $email = $request['email'];
+            $cpf = $request['cpf'];
 
-        $name = $request['name'];
-        $email = $request['email'];
-        $cpf = $request['cpf'];
+            $check_cpf = $this->cpfExists($cpf);
+            $check_email = $this->emailExists($email);
 
-        $check_cpf = $this->cpfExists($cpf);
-        $check_email = $this->emailExists($email);
-
-        if($check_cpf || $check_email){
-            $error = [
-                'error' => 'denied',
-                'message' => 'Email e/ou CPF ja existem no sistema!'
-            ];
-            http_response_code(409); 
-            return ($error);
-        }else{
-            $retorno =  $this->user->insert($name, $email, $cpf);
-            return $retorno;
+            if($check_cpf || $check_email){
+                $error = [
+                    'error' => 'denied',
+                    'message' => 'Email e/ou CPF ja existem no sistema!'
+                ];
+                http_response_code(409); 
+                return ($error);
+            }else{
+                $retorno =  $this->user->insert($name, $email, $cpf);
+                if($retorno){
+                    return [
+                        'status' => 'success',
+                        'message' => 'Usuario cadastrado com sucesso!'
+                    ];
+                }else{
+                    http_response_code(400);
+                    return [
+                        'status' => 'error',
+                        'message' => 'Erro ao cadastrar o usuario'
+                    ];
+                }
+            }
         }
+        $error = [
+            'error' => 'denied',
+            'message' => 'Email e Nome são obrigatorios!'
+        ];
+        http_response_code(400); 
+        return ($error);
       
     }
 
@@ -76,10 +94,54 @@ class UserService{
     }
 
     public function apiPut($id, $request){
-        $response = $this->user->update($id, $request);
 
-        return $response;
+        $user = $this->apiGet($id);
+        if (!array_key_exists('error', $user)){
+            $name = $request['name'];
+            $email = $request['email'];
+            $cpf = $request['cpf'];
 
+            $validateEmail = $this->validateEmail($id, $email);
+            $validateCpf = $this->validateCpf($id, $cpf);
+
+            if($validateEmail || $validateCpf){
+                $error = [
+                    'error' => 'denied',
+                    'message' => 'Email e/ou CPF ja existentes para outro usuario!'
+                ];
+                http_response_code(400); 
+                return $error;
+            } 
+
+            $user = $this->user->update($id, $name, $email, $cpf,$user);
+            if($user){
+                return [
+                    'status' => 'success',
+                    'message' => 'Usuario editado com sucesso!'
+                ];
+            }else{
+                http_response_code(400); 
+                return [
+                    'status' => 'error',
+                    'message' => 'Nenhuma linha afetada!'
+                ];
+            }
+        }
+
+        return $user;
+
+    }
+
+    public function validateEmail($id, $email){
+        $response = $this->user->verifyEmail($id, $email);
+        return $response ? true : false;
+
+    }
+
+    public function validateCpf($id, $cpf){
+        $response = $this->user->verifyCpf($id, $cpf);
+        return $response ? true : false;
+        
     }
 
     public function apiDelete($id){

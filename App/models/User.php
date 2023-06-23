@@ -52,14 +52,14 @@ class User
        $stmt->bindParam(':id_user', $id);
        $stmt->execute();
     //    $stmt->debugDumpParams();exit;
-       $user = $stmt->fetchAll($this->db::FETCH_ASSOC);
+       $user = $stmt->fetch($this->db::FETCH_ASSOC);
        return $user;
         
     }
 
     public function insert($name, $email, $cpf){
  
-        if ($name != null &&  $cpf != null){
+       
         
             $sqlInsert = 'INSERT INTO users (name, email, cpf) VALUES (:name, :email, :cpf)';
    
@@ -70,12 +70,9 @@ class User
 
             $stmt->execute();
 
-            if($stmt->rowCount() > 0){
-                return 'Cadastrado com sucesso!';
-            }
-        }else{
-            throw new InvalidArgumentException('Os campos nome, email e cpf são obrigatórios');
-        }
+            return $stmt->rowCount() > 0 ? true : false;
+            
+       
         
 
     }
@@ -96,59 +93,42 @@ class User
         return $stmt->rowCount();
     }
 
-    public function update($id, $data){
-     
-        $validateUpdate = 'SELECT * FROM users WHERE id_user = :id_user';
-        $val = $this->db->prepare($validateUpdate);
+    public function verifyEmail($id, $email){
+        $sql = 'SELECT * FROM users WHERE email = :email and id_user <> :id_user'; 
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id_user', $id);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        // $stmt->debugDumpParams();exit;
+        return $stmt->rowCount();
+    }
 
-        $val->bindParam(':id_user', $id);
-        $val->execute();
+    public function verifyCpf($id, $cpf){
+        $sql = 'SELECT * FROM users WHERE cpf = :cpf and id_user <> :id_user'; 
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id_user', $id);
+        $stmt->bindParam(':cpf', $cpf);
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
+
+    public function update($id, $name, $email, $cpf, $user){
+   
+        $sqlUpdate = 'UPDATE users SET name = :name, email = :email, cpf = :cpf WHERE id_user = :id_user';
         
-        if($val->rowCount() > 0){
-            $user = $val->fetch($this->db::FETCH_ASSOC);
-            $validateEmail = 'SELECT * FROM users WHERE email = :email and id_user <> :id_user';  // criar metodo para verificar por id email e cpf
-            $val2 = $this->db->prepare($validateEmail);
-            $val2->bindParam(':id_user', $id);
-            $val2->bindParam(':email', $data['email']);
-            $val2->execute();
-            if ($val2->rowCount() > 0){
-                http_response_code(409);
-                return [
-                    'status' => 'error',
-                    'message' => 'Email e/ou CPF pertencem a outro usuario'
-                ];
-            }else{
-                $sqlUpdate = 'UPDATE users SET name = :name, email = :email, cpf = :cpf WHERE id_user = :id_user';
-                
-                $name = $data['name'] === null ? $user['name'] : $data['name'];
-                $email = $data['email'] === null ? $user['email'] : $data['email'];
-                $cpf = $data['cpf'] === null ? $user['cpf'] : $data['cpf'];
-                
-                
-                $this->db->beginTransaction();
-                $stmt = $this->db->prepare($sqlUpdate);
+        $name = $name === null ? $user['name'] : $name;
+        $email = $email === null ? $user['email'] : $email;
+        $cpf = $cpf === null ? $user['cpf'] : $cpf;
+        
+        $stmt = $this->db->prepare($sqlUpdate);
 
-                $stmt->bindParam(':id_user', $id);
-                $stmt->bindParam(':name', $name);
-                $stmt->bindParam(':email', $email);
-                $stmt->bindParam(':cpf', $cpf);
-                $stmt->execute();
+        $stmt->bindParam(':id_user', $id);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':cpf', $cpf);
+        $stmt->execute();
 
-                if($stmt->rowCount() > 0){
-                    $this->db->commit();
-                    return [
-                        'status' => 'success',
-                        'message' => 'Usuario editado com sucesso!'
-                    ];
-                }
-            }
-
-        }
-        http_response_code(404);
-        return [
-            'status' => 'not_found',
-            'message' => 'Usuario nao encontrado!'
-        ];
+        return $stmt->rowCount() > 0 ? true : false;
 
     }
 
