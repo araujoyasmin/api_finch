@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use PDO;
 use PDOException;
 
+use Config\Database;
 
 class Task
 {
@@ -14,21 +15,10 @@ class Task
     
     public function __construct()
     {
-        $this->db = $this->setDB();
+        $database = Database::getInstance();
+        $this->db = $database->getDb();
     }
-
    
-    public function setDB()
-    {
-        try {
-            
-            return new PDO(
-                'mysql:host=localhost; dbname=api;', 'root', ''
-            );
-        } catch (PDOException $exception) {
-            throw new PDOException($exception->getMessage());
-        }
-    }
 
     public function getAll()
     {

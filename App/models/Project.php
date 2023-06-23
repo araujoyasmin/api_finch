@@ -3,8 +3,8 @@
 namespace Model;
 
 use InvalidArgumentException;
-use PDO;
-use PDOException;
+
+use Config\Database;
 
 
 class Project
@@ -14,20 +14,8 @@ class Project
     
     public function __construct()
     {
-        $this->db = $this->setDB();
-    }
-
-   
-    public function setDB()
-    {
-        try {
-            
-            return new PDO(
-                'mysql:host=localhost; dbname=api;', 'root', ''
-            );
-        } catch (PDOException $exception) {
-            throw new PDOException($exception->getMessage());
-        }
+        $database = Database::getInstance();
+        $this->db = $database->getDb();
     }
 
     public function getAll()
