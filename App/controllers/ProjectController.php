@@ -7,19 +7,19 @@ require_once ('./App/services/ProjectService.php');
 class ProjectController {
     private $projectService;
 
-    public function __construct(ProjectService $projectService) {
-        $this->projectService = $projectService;
+    public function __construct() {
+        $this->projectService = new ProjectService();
     }
 
-    public function create() {
+    public function post() {
         $postjson = json_decode(file_get_contents('php://input'),true);
         $response = $this->projectService->apiPost($postjson);
 
         return $response;
     }
 
-    public function read($request) {
-        // echo 'read';exit;
+    public function get($request = null) {
+       
         $response = $this->projectService->apiGet($request);
 
 
@@ -27,8 +27,7 @@ class ProjectController {
         
     }
 
-    public function update($request) {
-        $param = $request['param'];
+    public function put($param) {
         $putJson = json_decode(file_get_contents('php://input'),true);
         $response = $this->projectService->apiPut($param, $putJson);
 
@@ -36,15 +35,13 @@ class ProjectController {
         
     }
 
-    public function delete($request) {
-        $param = $request['param'];
+    public function delete($param) {
         $response = $this->projectService->apiDelete($param);
         return $response;
        
     }
     
-    public function close($request){
-        $param = $request['param'];
+    public function patch($param){
         $patchJson = json_decode(file_get_contents('php://input'),true);
         $response = $this->projectService->apiClose($param, $patchJson);
         return $response;

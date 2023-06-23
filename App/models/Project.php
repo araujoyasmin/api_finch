@@ -85,15 +85,14 @@ class Project
         $val->bindParam(':id_project', $id);
         $val->execute();
         
-        //$val->debugDumpParams();exit;
+        // $val->debugDumpParams();exit;
         if($val->rowCount() > 0){
           
                 $project = $val->fetch($this->db::FETCH_ASSOC);
-                $sqlUpdate = 'UPDATE projects SET name = :name, final_date = :final_date, status = :status WHERE id_project = :id_project';
+                $sqlUpdate = 'UPDATE projects SET name = :name, final_date = :final_date WHERE id_project = :id_project';
                 
                 $name = $data['name'] === null ? $project['name'] : $data['name'];
                 $final_date = $data['final_date'] === null ? $project['final_date'] : $data['final_date'];
-                $status = $data['status'] === null ? $project['status'] : $data['status'];
                 
                 
                 $this->db->beginTransaction();
@@ -102,26 +101,35 @@ class Project
                 $stmt->bindParam(':id_project', $id);
                 $stmt->bindParam(':name', $name);
                 $stmt->bindParam(':final_date', $final_date);
-                $stmt->bindParam(':status', $status);
                 $stmt->execute();
                 // $stmt->debugDumpParams();exit;
                 if($stmt->rowCount() > 0){
                     $this->db->commit();
-                    return 'Editado com sucesso!'; // ajustar o retorno
-                    // exit;
+                    return [
+                        'status' => 'success',
+                        'message' => 'Projeto editado com sucesso!'
+                    ];
+                }else{
+                    return [
+                        'status' => 'error',
+                        'message' => 'Nenhuma linha afetada!'
+                    ];
                 }
             
 
         }
-        throw new InvalidArgumentException('Id de usuário não existe'); //ajustar
+        http_response_code(404);
+        return [
+            'status' => 'not_found',
+            'message' => 'Projeto nao encontrado!'
+        ];
 
     }
 
     public function delete($id)
     {
         $consultaDelete = 'DELETE FROM projects WHERE id_project = :id_project';
-        //echo $consultaDelete;exit;
-        // if ($tabela && $id) {
+
             $this->db->beginTransaction();
             $stmt = $this->db->prepare($consultaDelete);
             $stmt->bindParam(':id_project', $id);
@@ -130,9 +138,6 @@ class Project
                 $this->db->commit();
                 return 'Deletado com sucesso';
             }
-            // $this->db->rollBack();
-            // throw new InvalidArgumentException('Id nao encontrado!');
-        // }
        
     }
 
@@ -143,12 +148,12 @@ class Project
         $stmt->execute();
         $project = $stmt->fetch($this->db::FETCH_ASSOC);
 
-        // print_r($project);exit;
         return $project['final_date'];
     }
 
     public function updateStatus($id, $status){
 
+        // verificar se existem tarefas em aberto
         $sqlProject = "SELECT t.status FROM projects p 
                         INNER JOIN tasks t ON p.id_project = t.id_project
                         WHERE t.status = 1 and p.id_project = :id_project";
@@ -190,7 +195,6 @@ class Project
             ];
         }
         }
-
 
         
     }

@@ -53,18 +53,16 @@ class User
        $stmt->execute();
     //    $stmt->debugDumpParams();exit;
        $user = $stmt->fetchAll($this->db::FETCH_ASSOC);
-    //    print_r($user);exit;
        return $user;
         
     }
 
     public function insert($name, $email, $cpf){
-        
-        // echo "insert";exit;
+ 
         if ($name != null &&  $cpf != null){
         
             $sqlInsert = 'INSERT INTO users (name, email, cpf) VALUES (:name, :email, :cpf)';
-            //echo $sqlInsert;exit;
+   
             $stmt = $this->db->prepare($sqlInsert);
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':email', $email);
@@ -73,7 +71,6 @@ class User
             $stmt->execute();
 
             if($stmt->rowCount() > 0){
-            // $this->db->commit();
                 return 'Cadastrado com sucesso!';
             }
         }else{
@@ -100,34 +97,27 @@ class User
     }
 
     public function update($id, $data){
-        
-        // echo "chegou no update";exit;
-
+     
         $validateUpdate = 'SELECT * FROM users WHERE id_user = :id_user';
         $val = $this->db->prepare($validateUpdate);
 
         $val->bindParam(':id_user', $id);
         $val->execute();
         
-        //$val->debugDumpParams();exit;
         if($val->rowCount() > 0){
-            // echo "encontrou user";exit;
             $user = $val->fetch($this->db::FETCH_ASSOC);
-            // print_r($retorno_banco);exit;
             $validateEmail = 'SELECT * FROM users WHERE email = :email and id_user <> :id_user';  // criar metodo para verificar por id email e cpf
             $val2 = $this->db->prepare($validateEmail);
             $val2->bindParam(':id_user', $id);
             $val2->bindParam(':email', $data['email']);
             $val2->execute();
-            // $val2->debugDumpParams();exit;
             if ($val2->rowCount() > 0){
-                // echo "email cdastrado";exit;
-                    echo "email pertence a outro usuario!";exit;
+                http_response_code(409);
+                return [
+                    'status' => 'error',
+                    'message' => 'Email e/ou CPF pertencem a outro usuario'
+                ];
             }else{
-
-               //print_r($retorno_banco);exit;
-
-
                 $sqlUpdate = 'UPDATE users SET name = :name, email = :email, cpf = :cpf WHERE id_user = :id_user';
                 
                 $name = $data['name'] === null ? $user['name'] : $data['name'];
@@ -146,13 +136,19 @@ class User
 
                 if($stmt->rowCount() > 0){
                     $this->db->commit();
-                    return 'Editado com sucesso!'; // ajustar o retorno
-                    // exit;
+                    return [
+                        'status' => 'success',
+                        'message' => 'Usuario editado com sucesso!'
+                    ];
                 }
             }
 
         }
-        throw new InvalidArgumentException('Id de usuário não existe'); //ajustar
+        http_response_code(404);
+        return [
+            'status' => 'not_found',
+            'message' => 'Usuario nao encontrado!'
+        ];
 
     }
 
@@ -160,8 +156,7 @@ class User
     {
                
         $consultaDelete = 'DELETE FROM users WHERE id_user = :id_user';
-        //echo $consultaDelete;exit;
-        // if ($tabela && $id) {
+ 
             $this->db->beginTransaction();
             $stmt = $this->db->prepare($consultaDelete);
             $stmt->bindParam(':id_user', $id);
@@ -170,10 +165,7 @@ class User
                 $this->db->commit();
                 return 'Deletado com sucesso';
             }
-            // $this->db->rollBack();
-            // throw new InvalidArgumentException('Id nao encontrado!');
-        // }
-        
+  
     }
 
     public function getUser($email, $cpf){

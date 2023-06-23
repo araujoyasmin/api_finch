@@ -30,6 +30,13 @@ class LoginController{
             $jwt = $this->generateToken($payload);
 
             return $jwt;
+        }else {
+            $error = [
+                'error' => 'denied',
+                'message' => 'Email e/ou CPF invalidos!'
+            ];
+            http_response_code(400); 
+            return ($error);
         }
         
     }
@@ -51,13 +58,10 @@ class LoginController{
 
     public function checkAuth(){
         $headers = apache_request_headers();
-        // print_r($headers['Authorization']);exit;
         $token = $headers['Authorization'] ?? '';
         if (!empty($token)) {
             // Verifique o token e obtenha os dados do usuário
-            // echo "yasmin";exit;
             $decodedToken = self::verifyToken($token);
-            // print_r($decodedToken);exit;
             if ($decodedToken) {
                 // O token é válido
                 $request['user'] = $decodedToken->sub;
@@ -81,16 +85,13 @@ class LoginController{
             $payload = base64_decode($tokenParts[1]);
             
             $decodedToken = json_decode($payload);
-            // print_r($decodedToken);exit;
            
             $isValidSignature = hash_hmac('sha256', "$tokenParts[0].$tokenParts[1]", $secretKey, true) === base64_decode($tokenParts[2]);
             
             if ($isValidSignature) {
-                // echo "yyyy";exit;
                 // Verifique a validade do token (data de expiração, por exemplo)
                 $currentTime = time();
                 if ($decodedToken->exp >= $currentTime) {
-                    // print_r($decodedToken);exit;
                     return $decodedToken;
                 }
             }

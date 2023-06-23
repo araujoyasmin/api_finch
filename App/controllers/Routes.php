@@ -2,16 +2,9 @@
 
 namespace Controller;
 
-use UserController;
-use ProjectController;
-use TaskController;
 use LoginController;
-
-use Service\UserService;
-use Service\ProjectService;
-use Service\TaskService;
 use Service\LoginService;
-use Firebase\JWT\JWT;
+
 
 require_once('./App/controllers/UserController.php');
 require_once('./App/services/UserService.php');
@@ -27,7 +20,6 @@ class Routes{
 
     private $loginController;
     private $loginService;
-    private $secretKey = 'api_finch';
 
     public function __construct() {
         $this->loginService = new LoginService();
@@ -38,7 +30,10 @@ class Routes{
         if(isset($_GET['path'])){
             $path = explode("/", $_GET['path']);
         }else{
-            echo "Rota não informada!";exit;
+            $error = [
+                'error' => 'invalid_route',
+                'message' => 'Rota invalida!'
+            ];
         }
 
         $request = [];
@@ -69,6 +64,9 @@ class Routes{
 
     public function getApi($route){
 
+    $perfil = $route['perfil'];
+    $method = $route['method'];
+    $router = $route['route'];
 
        switch($route['route']){
             case 'user':
@@ -86,7 +84,6 @@ class Routes{
                         'controller' => 'ProjectController',
                         'action' => $route['method']
                     ],
-                   
                 ];
             break;
             case 'task':
@@ -94,8 +91,23 @@ class Routes{
                     '/task' => [
                         'controller' => 'TaskController',
                         'action' => $route['method']
-                    ],
-                   
+                    ],                   
+                ];
+            break;
+            case 'close-task':
+                $routes = [
+                    '/task' => [
+                        'controller' => 'TaskController',
+                        'action' => $route['method']
+                    ],                   
+                ];
+            break;
+            case 'close-project':
+                $routes = [
+                    '/task' => [
+                        'controller' => 'ProjectController',
+                        'action' => $route['method']
+                    ],                 
                 ];
             break;
             default:
@@ -107,20 +119,31 @@ class Routes{
                 return $error;
        }
 
-        foreach($routes as $item){
-            $controllerClassName = $item['controller'];
-            $actionMethodName = $item['action'];
-            $controller = new $controllerClassName();
-            if (method_exists($controller, $actionMethodName)) {
-                $response = $controller->$actionMethodName($route['param']);
-                return $response;
-            } else {
-                $error = [
-                    'error' => 'invalid_method',
-                    'message' => 'Metodo invalido!'
-                ];
-                http_response_code(400); 
-                return $error;
+    
+       if(($method != 'GET' && $perfil == 1 && $router != 'close-task') || ($router == 'close-project' && $perfil == 1)){
+      
+            $error = [
+                'error' => 'invalid_access',
+                'message' => 'Seu perfil nao tem acesso a essa rota!'
+            ];
+            http_response_code(400); 
+            return $error;
+       }else{
+            foreach($routes as $item){
+                $controllerClassName = $item['controller'];
+                $actionMethodName = $item['action'];
+                $controller = new $controllerClassName();
+                if (method_exists($controller, $actionMethodName)) {
+                    $response = $controller->$actionMethodName($route['param']);
+                    return $response;
+                } else {
+                    $error = [
+                        'error' => 'invalid_method',
+                        'message' => 'Metodo invalido!'
+                    ];
+                    http_response_code(400); 
+                    return $error;
+                }
             }
         }
     }

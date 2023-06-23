@@ -8,11 +8,9 @@ require_once('./App/models/User.php');
 
 class LoginService{
 
-    // private $data = [];
     private $user;
 
     public function __construct(){
-        // $this->data = $data;
         
         $this->user = new User();
 

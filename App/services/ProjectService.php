@@ -8,29 +8,32 @@ require_once('./App/models/Project.php');
 
 class ProjectService{
 
-    // private $data = [];
     private $project;
 
     public function __construct(){
-        // $this->data = $data;
         
         $this->project = new Project();
 
     }
 
-    public function apiGet($request){
-        // echo 'apiget';exit;
-        $param = $request['param'];
-
-        // echo $param;exit;
-
+    public function apiGet($param){
+     
        if(empty($param)){
-            $users = $this->project->getAll();
+            $projects = $this->project->getAll();
        }else{
-            $users = $this->project->getById($param);
+            $projects = $this->project->getById($param);
        }
 
-       return $users;
+       if($projects){
+            return $projects;
+        }else{
+            $error = [
+                'error' => 'not_found',
+                'message' => 'Projeto nao encontrado!'
+            ];
+            http_response_code(404); 
+            return ($error);
+        }
 
       
     }
@@ -67,14 +70,15 @@ class ProjectService{
         $response = $this->project->delete($id);
 
         if($response === null){
-            throw new \InvalidArgumentException('Nenhum registro encontrado');
+            http_response_code(404);
+            return [
+                'status' => 'not_found',
+                'message' => 'Projeto nao encontrado!'
+            ];
         }
 
         return $response;
 
-
-       
-       
     }
 
     public function apiClose($id, $request){
@@ -84,7 +88,11 @@ class ProjectService{
         $response = $this->project->updateStatus($id, $status);
 
         if($response === null){
-            throw new \InvalidArgumentException('Nenhum registro encontrado');
+            http_response_code(404);
+            return [
+                'status' => 'not_found',
+                'message' => 'Projeto nao encontrado!'
+            ];
         }
 
         return $response;

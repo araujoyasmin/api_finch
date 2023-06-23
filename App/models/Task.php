@@ -61,10 +61,8 @@ class Task
 
     public function insert($id_project, $id_user, $title, $description,$final_date){
         
-        // if ($name != null &&  $final_date != null){
-        
             $sqlInsert = 'INSERT INTO tasks (id_project, id_user , title, description, final_date ) VALUES (:id_project, :id_user , :title, :description, :final_date)';
-            //echo $sqlInsert;exit;
+            
             $stmt = $this->db->prepare($sqlInsert);
             $stmt->bindParam(':id_project', $id_project);
             $stmt->bindParam(':id_user', $id_user);
@@ -75,15 +73,10 @@ class Task
             $stmt->execute();
             // $stmt->debugDumpParams();exit;
             if($stmt->rowCount() > 0){
-            // $this->db->commit();
+            
                 return 'Cadastrado com sucesso!';
             }
-        // }else{
-        //     throw new InvalidArgumentException('Os campos nome e prazo final são obrigatórios');
-        // }
-            
-        
-
+       
     }
 
 
@@ -99,14 +92,13 @@ class Task
         if($val->rowCount() > 0){
           
                 $task = $val->fetch($this->db::FETCH_ASSOC);
-                $sqlUpdate = 'UPDATE tasks SET id_project = :id_project, id_user = :id_user, title = :title, description = :description, final_date = :final_date, status = :status WHERE id_task = :id_task';
+                $sqlUpdate = 'UPDATE tasks SET id_project = :id_project, id_user = :id_user, title = :title, description = :description, final_date = :final_date WHERE id_task = :id_task';
                 
                 $id_project = $data['id_project'] === null ? $task['id_project'] : $data['id_project'];
                 $id_user = $data['id_user'] === null ? $task['id_user'] : $data['id_user'];
                 $title = $data['title'] === null ? $task['title'] : $data['title'];
                 $description = $data['description'] === null ? $task['description'] : $data['description'];
                 $final_date = $data['final_date'] === null ? $task['final_date'] : $data['final_date'];
-                $status = $data['status'] === null ? $task['status'] : $data['status'];
                 
                 
                 $this->db->beginTransaction();
@@ -118,26 +110,33 @@ class Task
                 $stmt->bindParam(':title', $title);
                 $stmt->bindParam(':description', $description);
                 $stmt->bindParam(':final_date', $final_date);
-                $stmt->bindParam(':status', $status);
                 $stmt->execute();
                 // $stmt->debugDumpParams();exit;
                 if($stmt->rowCount() > 0){
                     $this->db->commit();
-                    return 'Editado com sucesso!'; // ajustar o retorno
-                    // exit;
+                    return [
+                        'status' => 'success',
+                        'message' => 'Tarefa editada com sucesso!'
+                    ];
+                }else{
+                    return [
+                        'status' => 'error',
+                        'message' => 'Nenhuma linha afetada!'
+                    ];
                 }
-            
-
         }
-        throw new InvalidArgumentException('Id de usuário não existe'); //ajustar
+        http_response_code(404);
+        return [
+            'status' => 'not_found',
+            'message' => 'Tarefa nao encontrada!'
+        ];
 
     }
 
     public function delete($id)
     {
         $consultaDelete = 'DELETE FROM tasks WHERE id_task = :id_task';
-        //echo $consultaDelete;exit;
-        // if ($tabela && $id) {
+
             $this->db->beginTransaction();
             $stmt = $this->db->prepare($consultaDelete);
             $stmt->bindParam(':id_task', $id);
@@ -146,9 +145,7 @@ class Task
                 $this->db->commit();
                 return 'Deletado com sucesso';
             }
-            // $this->db->rollBack();
-            // throw new InvalidArgumentException('Id nao encontrado!');
-        // }
+
         
     }
 
@@ -181,10 +178,6 @@ class Task
             ];
         }
     }
-
-
-
-
     
     public function getDb()
 

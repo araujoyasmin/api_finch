@@ -10,23 +10,17 @@ require_once('./App/models/Project.php');
 
 class TaskService{
 
-    // private $data = [];
     private $task;
     private $project;
 
     public function __construct(){
-        // $this->data = $data;
         
         $this->task = new Task();
         $this->project = new Project();
 
     }
 
-    public function apiGet($request){
-
-        $param = $request['param'];
-
-        // echo $param;exit;
+    public function apiGet($param){
 
        if(empty($param)){
             $tasks = $this->task->getAll();
@@ -34,7 +28,16 @@ class TaskService{
             $tasks = $this->task->getById($param);
        }
 
-       return $tasks;
+        if($tasks){
+            return $tasks;
+        }else{
+            $error = [
+                'error' => 'not_found',
+                'message' => 'Tarefa nao encontrada!'
+            ];
+            http_response_code(404); 
+            return ($error);
+        }
 
       
     }
@@ -137,7 +140,11 @@ class TaskService{
         $response = $this->task->delete($id);
 
         if($response === null){
-            throw new \InvalidArgumentException('Nenhum registro encontrado');
+            http_response_code(404);
+            return [
+                'status' => 'not_found',
+                'message' => 'Tarefa nao encontrada!'
+            ];
         }
 
         return $response;

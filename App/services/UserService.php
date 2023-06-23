@@ -8,11 +8,9 @@ require_once('./App/models/User.php');
 
 class UserService{
 
-    // private $data = [];
     private $user;
 
     public function __construct(){
-        // $this->data = $data;
         
         $this->user = new User();
 
@@ -27,9 +25,17 @@ class UserService{
             $users = $this->user->getById($param);
        }
 
-       return $users;
+       if($users){
+            return $users;
+       }else{
+            $error = [
+                'error' => 'not_found',
+                'message' => 'Usuario nao encontrado!'
+            ];
+            http_response_code(404); 
+            return ($error);
+       }
 
-      
     }
 
     public function apiPost($request){
@@ -47,7 +53,7 @@ class UserService{
                 'error' => 'denied',
                 'message' => 'Email e/ou CPF ja existem no sistema!'
             ];
-            http_response_code(400); 
+            http_response_code(409); 
             return ($error);
         }else{
             $retorno =  $this->user->insert($name, $email, $cpf);
@@ -60,7 +66,6 @@ class UserService{
 
         $response =  $this->user->checkEmailExists($email);
         return $response ? true : false;
-        // return $response;
     }
 
     public function cpfExists($cpf) {
@@ -68,21 +73,13 @@ class UserService{
     
         $response =  $this->user->checkCpfExists($cpf);
         return $response ? true : false;
-        // return $response;
     }
 
     public function apiPut($id, $request){
-        // echo "yasmin2";exit;
         $response = $this->user->update($id, $request);
-
-        if($response === null){
-            throw new \InvalidArgumentException('Nenhum registro encontrado');
-        }
 
         return $response;
 
-       
-       
     }
 
     public function apiDelete($id){
@@ -90,7 +87,12 @@ class UserService{
         $response = $this->user->delete($id);
 
         if($response === null){
-            throw new \InvalidArgumentException('Nenhum registro encontrado');
+            $error = [
+                'error' => 'not_found',
+                'message' => 'Usuario nao encontrado!'
+            ];
+            http_response_code(409); 
+            return ($error);
         }
 
         return $response;
