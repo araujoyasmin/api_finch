@@ -4,7 +4,7 @@ namespace Service;
 
 use Model\User;
 
-require_once('./App/models/User.php');
+// require_once('./App/models/User.php');
 
 class LoginService{
 

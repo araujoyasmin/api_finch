@@ -7,6 +7,7 @@ use PDO;
 use PDOException;
 
 use Config\Database;
+require_once ('./App/config/database.php');
 
 class Task
 {
@@ -62,10 +63,7 @@ class Task
     
             $stmt->execute();
             // $stmt->debugDumpParams();exit;
-            if($stmt->rowCount() > 0){
-            
-                return 'Cadastrado com sucesso!';
-            }
+            return $stmt->rowCount() > 0 ? true : false;
        
     }
 
@@ -102,18 +100,7 @@ class Task
                 $stmt->bindParam(':final_date', $final_date);
                 $stmt->execute();
                 // $stmt->debugDumpParams();exit;
-                if($stmt->rowCount() > 0){
-                    $this->db->commit();
-                    return [
-                        'status' => 'success',
-                        'message' => 'Tarefa editada com sucesso!'
-                    ];
-                }else{
-                    return [
-                        'status' => 'error',
-                        'message' => 'Nenhuma linha afetada!'
-                    ];
-                }
+                return $stmt->rowCount() > 0 ? true : false;
         }
         http_response_code(404);
         return [

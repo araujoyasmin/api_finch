@@ -74,10 +74,18 @@ class TaskService{
     
         $response = $this->task->insert($id_project, $id_user, $title, $description, $final_date);
     
-        return [
-            'type' => 'success',
-            'return' => $response
-        ];
+        if($response){
+            return [
+                'status' => 'success',
+                'message' => 'Tarefa cadastrada com sucesso!'
+            ];
+        }else{
+            http_response_code(400);
+            return [
+                'status' => 'error',
+                'message' => 'Erro ao cadastrar tarefa'
+            ];
+        }
 
     }
 
@@ -126,11 +134,18 @@ class TaskService{
         
         $response = $this->task->update($id, $request);
 
-        if($response === null){
-            throw new \InvalidArgumentException('Nenhum registro encontrado');
+        if($response){
+            return [
+                'status' => 'success',
+                'message' => 'Tarefa editada com sucesso!'
+            ];
+        }else{
+            http_response_code(400);
+            return [
+                'status' => 'error',
+                'message' => 'Erro ao editar tarefa'
+            ];
         }
-
-        return $response;
        
        
     }

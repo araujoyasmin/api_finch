@@ -3,9 +3,12 @@
 namespace Model;
 
 use InvalidArgumentException;
+use PDO;
+use PDOException;
 
 use Config\Database;
 
+require_once ('./App/config/database.php');
 
 class Project
 {
