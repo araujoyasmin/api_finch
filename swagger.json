@@ -9,6 +9,7 @@
         "/api_finch/login": {
             "post": {
               "summary": "Login",
+              "tags": ["Auth"],
               "parameters": [ ],
               "requestBody": {
                 "required": true,
@@ -40,6 +41,7 @@
       "/api_finch/user": {
         "get": {
           "summary": "Lista todos os usuários",
+          "tags": ["Usuarios"],
           "security": [
             {
               "bearerAuth": []
@@ -65,6 +67,7 @@
         },
         "post": {
           "summary": "Cria um novo usuário",
+          "tags": ["Usuarios"],
           "security": [
             {
               "bearerAuth": []
@@ -109,6 +112,7 @@
       "/api_finch/user/{id}": {
         "get": {
           "summary": "Busca um usuário pelo ID",
+          "tags": ["Usuarios"],
           "security": [
             {
               "bearerAuth": []
@@ -143,6 +147,7 @@
         },
         "put": {
           "summary": "Atualiza um usuário existente",
+          "tags": ["Usuarios"],
           "security": [
             {
               "bearerAuth": []
@@ -190,6 +195,7 @@
         },
         "delete": {
           "summary": "Exclui um usuário",
+          "tags": ["Usuarios"],
           "security": [
             {
               "bearerAuth": []
@@ -219,6 +225,7 @@
       "/api_finch/task": {
         "get": {
           "summary": "Lista todos as tarefas",
+          "tags": ["Tarefas"],
           "security": [
             {
               "bearerAuth": []
@@ -247,6 +254,7 @@
         },
         "post": {
           "summary": "Cria uma nova tarefa",
+          "tags": ["Tarefas"],
           "security": [
             {
               "bearerAuth": []
@@ -291,6 +299,7 @@
       "/api_finch/task/{id}": {
         "get": {
           "summary": "Busca um tarefa pelo ID",
+          "tags": ["Tarefas"],
           "security": [
             {
               "bearerAuth": []
@@ -325,6 +334,7 @@
         },
         "put": {
           "summary": "Atualiza um tarefa existente",
+          "tags": ["Tarefas"],
           "security": [
             {
               "bearerAuth": []
@@ -372,6 +382,7 @@
         },
         "delete": {
           "summary": "Exclui uma tarefa",
+          "tags": ["Tarefas"],
           "security": [
             {
               "bearerAuth": []
@@ -401,6 +412,7 @@
       "/api_finch/project": {
         "get": {
           "summary": "Lista todos os projetos",
+          "tags": ["Projetos"],
           "security": [
             {
               "bearerAuth": []
@@ -426,6 +438,7 @@
         },
         "post": {
           "summary": "Cria um novo projeto",
+          "tags": ["Projetos"],
           "security": [
             {
               "bearerAuth": []
@@ -464,6 +477,7 @@
       "/api_finch/project/{id}": {
         "get": {
           "summary": "Busca um projeto pelo ID",
+          "tags": ["Projetos"],
           "security": [
             {
               "bearerAuth": []
@@ -498,6 +512,7 @@
         },
         "put": {
           "summary": "Atualiza um projeto existente",
+          "tags": ["Projetos"],
           "security": [
             {
               "bearerAuth": []
@@ -545,6 +560,7 @@
         },
         "delete": {
           "summary": "Exclui um projeto",
+          "tags": ["Projetos"],
           "security": [
             {
               "bearerAuth": []
@@ -574,6 +590,7 @@
       "/api_finch/close-task/{id}": {
         "patch": {
           "summary": "Finalizar tarefa",
+          "tags": ["Tarefas"],
           "security": [
             {
               "bearerAuth": []
@@ -620,6 +637,7 @@
       "/api_finch/close-project/{id}": {
         "patch": {
           "summary": "Finalizar projeto",
+          "tags": ["Projetos"],
           "security": [
             {
               "bearerAuth": []
@@ -667,6 +685,24 @@
         }
       }
     },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Login"
+          },
+        {
+          "name": "Usuarios",
+          "description": "Operações relacionadas a usuarios"
+        },
+        {
+          "name": "Tarefas",
+          "description": "Operações relacionadas a tarefas"
+        },
+        {
+          "name": "Projetos",
+          "description": "Operações relacionadas a projetos"
+        }
+      ],
     "components": {
         "securitySchemes": {
             "bearerAuth": {
