@@ -112,14 +112,11 @@ class Task
     {
         $consultaDelete = 'DELETE FROM tasks WHERE id_task = :id_task';
 
-            $this->db->beginTransaction();
-            $stmt = $this->db->prepare($consultaDelete);
-            $stmt->bindParam(':id_task', $id);
-            $stmt->execute();
-            if ($stmt->rowCount() > 0) {
-                $this->db->commit();
-                return 'Deletado com sucesso';
-            }
+
+        $stmt = $this->db->prepare($consultaDelete);
+        $stmt->bindParam(':id_task', $id);
+        $stmt->execute();
+        return $stmt->rowCount() > 0 ? true : false;
 
         
     }

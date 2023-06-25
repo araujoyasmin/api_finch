@@ -12,36 +12,67 @@ class TaskController {
     }
 
     public function post() {
-        $postjson = json_decode(file_get_contents('php://input'),true);
-        $response = $this->taskService->apiPost($postjson);
-
-        return $response;
+        try{
+            $postjson = json_decode(file_get_contents('php://input'),true);
+            return $this->taskService->apiPost($postjson);
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+        
     }
 
     public function get($request = null) {
-      
-        $response = $this->taskService->apiGet($request);
-
-        return $response;
+        try{
+            return $this->taskService->apiGet($request);
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+        
 
     }
 
     public function put($param) {
-        $putJson = json_decode(file_get_contents('php://input'),true);
-        $response = $this->taskService->apiPut($param, $putJson);
-
-        return $response;
+        try{
+            $putJson = json_decode(file_get_contents('php://input'),true);
+            return $this->taskService->apiPut($param, $putJson);
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+        
        
     }
 
     public function delete($param) {
-        $response = $this->taskService->apiDelete($param);
-        return $response;
+        try{
+            return $this->taskService->apiDelete($param);
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+        
     }
 
     public function patch($param){
-        $patchJson = json_decode(file_get_contents('php://input'),true);
-        $response = $this->taskService->apiClose($param, $patchJson);
-        return $response;
+        try{
+            $patchJson = json_decode(file_get_contents('php://input'),true);
+            return $this->taskService->apiClose($param, $patchJson);
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+        
     }
 }

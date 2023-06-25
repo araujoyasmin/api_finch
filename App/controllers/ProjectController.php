@@ -12,38 +12,65 @@ class ProjectController {
     }
 
     public function post() {
+        try{
         $postjson = json_decode(file_get_contents('php://input'),true);
-        $response = $this->projectService->apiPost($postjson);
+        return $this->projectService->apiPost($postjson);
 
-        return $response;
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+
     }
 
     public function get($request = null) {
-       
-        $response = $this->projectService->apiGet($request);
+        try{
+            return $this->projectService->apiGet($request);
 
-
-        return $response;
-        
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
     public function put($param) {
-        $putJson = json_decode(file_get_contents('php://input'),true);
-        $response = $this->projectService->apiPut($param, $putJson);
+        try{
+            $putJson = json_decode(file_get_contents('php://input'),true);
+            return $this->projectService->apiPut($param, $putJson);
 
-        return $response;
-        
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
     public function delete($param) {
-        $response = $this->projectService->apiDelete($param);
-        return $response;
-       
+        try{
+            return $this->projectService->apiDelete($param);
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
     }
     
     public function patch($param){
-        $patchJson = json_decode(file_get_contents('php://input'),true);
-        $response = $this->projectService->apiClose($param, $patchJson);
-        return $response;
+        try{
+            $patchJson = json_decode(file_get_contents('php://input'),true);
+           return $this->projectService->apiClose($param, $patchJson);
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+        
     }
 }

@@ -28,41 +28,44 @@ class Routes{
     }
 
     public  function getRoutes(){
-        if(isset($_GET['path'])){
-            $path = explode("/", $_GET['path']);
-        }else{
-            echo "Rota n�o informada!";exit;
+        try{
+            if(isset($_GET['path'])){
+                $path = explode("/", $_GET['path']);
+            }else{
+                echo "Rota n�o informada!";exit;
+            }
+    
+            $request = [];
+    
+            $request['route'] = $path[0];
+            $request['param'] = empty($path[1]) ? '':  $path[1];
+            $request['method'] = $_SERVER['REQUEST_METHOD'];
+    
+            if($request['route'] == 'login'){
+                return  $this->loginController->login($request);
+            }else{
+                if($authenticate = $this->loginController->checkAuth()){
+                    $route = array_merge($request, $authenticate);
+                    return $this->getApi($route);
+                }else {
+                    $error = [
+                        'error' => 'invalid_token',
+                        'message' => 'Não autenticado!'
+                    ];
+                    http_response_code(400); 
+                    return $error;
+                }           
+            }
+        }catch(\Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
         }
-
-        $request = [];
-
-        $request['route'] = $path[0];
-        $request['param'] = empty($path[1]) ? '':  $path[1];
-        $request['method'] = $_SERVER['REQUEST_METHOD'];
-
-        if($request['route'] == 'login'){
-            $login = $this->loginController->login($request);
-
-            return $login;
-        }else{
-            if($authenticate = $this->loginController->checkAuth()){
-                $route = array_merge($request, $authenticate);
-                $response_api = $this->getApi($route);
-                return $response_api;
-            }else {
-                $error = [
-                    'error' => 'invalid_token',
-                    'message' => 'Nao autenticado!'
-                ];
-                http_response_code(400); 
-                return $error;
-            }           
-        }
+        
     }
 
     public function getApi($route){
-
-        // print_r($route);exit;
 
     $perfil = $route['perfil'];
     $method = $route['method'];
@@ -125,7 +128,6 @@ class Routes{
 
     
        if(($method != 'GET' && $perfil == 1 && $router != 'close-task') || ($router == 'close-project' && $perfil == 1)){
-        // echo "yasmin";exit;
             $error = [
                 'error' => 'invalid_access',
                 'message' => 'Seu perfil nao tem acesso a essa rota!'
@@ -138,8 +140,7 @@ class Routes{
                 $actionMethodName = $item['action'];
                 $controller = new $controllerClassName();
                 if (method_exists($controller, $actionMethodName)) {
-                    $response = $controller->$actionMethodName($route['param']);
-                    return $response;
+                    return $controller->$actionMethodName($route['param']);
 
                 } else {
                     $error = [

@@ -45,11 +45,10 @@ class Project
 
     public function insert($name, $final_date){
         
-       // echo "insert";exit;
        if ($name != null &&  $final_date != null){
         
         $sqlInsert = 'INSERT INTO projects (name, final_date) VALUES (:name, :final_date)';
-        //echo $sqlInsert;exit;
+        
         $stmt = $this->db->prepare($sqlInsert);
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':final_date', $final_date);
@@ -67,21 +66,19 @@ class Project
     public function update($id, $name, $final_date, $project){
           
                 
-                $sqlUpdate = 'UPDATE projects SET name = :name, final_date = :final_date WHERE id_project = :id_project';
-                
-                $name = $name === null ? $project['name'] : $name;
-                $final_date = $final_date === null ? $project['final_date'] : $final_date;
-                
-                
-                $this->db->beginTransaction();
-                $stmt = $this->db->prepare($sqlUpdate);
+        $sqlUpdate = 'UPDATE projects SET name = :name, final_date = :final_date WHERE id_project = :id_project';
+        
+        $name = $name === null ? $project['name'] : $name;
+        $final_date = $final_date === null ? $project['final_date'] : $final_date;
+        
+        $stmt = $this->db->prepare($sqlUpdate);
 
-                $stmt->bindParam(':id_project', $id);
-                $stmt->bindParam(':name', $name);
-                $stmt->bindParam(':final_date', $final_date);
-                $stmt->execute();
-                // $stmt->debugDumpParams();exit;
-                return $stmt->rowCount() > 0 ? true : false;
+        $stmt->bindParam(':id_project', $id);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':final_date', $final_date);
+        $stmt->execute();
+        // $stmt->debugDumpParams();exit;
+        return $stmt->rowCount() > 0 ? true : false;
       
 
     }
@@ -100,7 +97,6 @@ class Project
     {
         $consultaDelete = 'DELETE FROM projects WHERE id_project = :id_project';
 
-            $this->db->beginTransaction();
             $stmt = $this->db->prepare($consultaDelete);
             $stmt->bindParam(':id_project', $id);
             $stmt->execute();
@@ -132,9 +128,7 @@ class Project
        
             $stmt->execute();
             return $stmt->rowCount() > 0 ? true : false;
-      
 
-        
     }
 
 

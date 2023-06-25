@@ -18,25 +18,32 @@ class LoginController{
         $postjson = json_decode(file_get_contents('php://input'),true);
         $user = $this->loginService->apiLogin($postjson);
         
-        if($user){
+        try{
+            if($user){
 
-            $payload = [
-                'sub' => $user['email'],
-                'perfil' => $user['id_perfil'],
-                'iat' => time(),
-                'exp' => time() + 3600
-            ];
+                $payload = [
+                    'sub' => $user['email'],
+                    'perfil' => $user['id_perfil'],
+                    'iat' => time(),
+                    'exp' => time() + 3600
+                ];
 
-            $jwt = $this->generateToken($payload);
+                $jwt = $this->generateToken($payload);
 
-            return $jwt;
-        }else {
-            $error = [
-                'error' => 'denied',
-                'message' => 'Email e/ou CPF invalidos!'
-            ];
-            http_response_code(400); 
-            return ($error);
+                return $jwt;
+            }else {
+                $error = [
+                    'error' => 'denied',
+                    'message' => 'Email e/ou CPF inválidos!'
+                ];
+                http_response_code(400); 
+                return ($error);
+            }
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
         }
         
     }
@@ -60,23 +67,29 @@ class LoginController{
         $headers = apache_request_headers();
         $token_b = $headers['Authorization'] ?? '';
         $token = str_replace('Bearer ', '', $token_b);
-        // print_r($token);exit;
-        if (!empty($token)) {
-            // Verifique o token e obtenha os dados do usu�rio
-            $decodedToken = self::verifyToken($token);
-            if ($decodedToken) {
-                // O token � v�lido
-                $request['user'] = $decodedToken->sub;
-                $request['perfil'] = $decodedToken->perfil;
+        try{
+            if (!empty($token)) {
                 
-                return $request;
+                $decodedToken = self::verifyToken($token);
+                if ($decodedToken) {
+                
+                    $request['user'] = $decodedToken->sub;
+                    $request['perfil'] = $decodedToken->perfil;
+                    
+                    return $request;
+                } else {
+                
+                    return false;
+                }
             } else {
-                // O token � inv�lido ou expirado
-                return false;
+                
+            return false;
             }
-        } else {
-            // Token n�o fornecido
-           return false;
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
         }
     }
     private static function verifyToken($token) {
@@ -91,7 +104,7 @@ class LoginController{
             $isValidSignature = hash_hmac('sha256', "$tokenParts[0].$tokenParts[1]", $secretKey, true) === base64_decode($tokenParts[2]);
             
             if ($isValidSignature) {
-                // Verifique a validade do token (data de expira��o, por exemplo)
+                
                 $currentTime = time();
                 if ($decodedToken->exp >= $currentTime) {
                     return $decodedToken;

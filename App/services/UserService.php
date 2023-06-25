@@ -30,7 +30,7 @@ class UserService{
        }else{
             $error = [
                 'error' => 'not_found',
-                'message' => 'Usuario nao encontrado!'
+                'message' => 'Usuario não encontrado!'
             ];
             http_response_code(404); 
             return ($error);
@@ -44,6 +44,7 @@ class UserService{
             $name = $request['name'];
             $email = $request['email'];
             $cpf = $request['cpf'];
+            $perfil = $request['id_perfil'];
 
             $check_cpf = $this->cpfExists($cpf);
             $check_email = $this->emailExists($email);
@@ -56,7 +57,7 @@ class UserService{
                 http_response_code(409); 
                 return ($error);
             }else{
-                $retorno =  $this->user->insert($name, $email, $cpf);
+                $retorno =  $this->user->insert($name, $email, $cpf,$perfil);
                 if($retorno){
                     http_response_code(201);
                     return [

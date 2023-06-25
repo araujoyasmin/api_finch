@@ -156,18 +156,20 @@ class TaskService{
         
         $response = $this->task->delete($id);
 
-        if($response === null){
-            http_response_code(404);
+        if($response){
+            http_response_code(201);
             return [
-                'status' => 'not_found',
-                'message' => 'Tarefa nao encontrada!'
+                'status' => 'success',
+                'message' => 'Tarefa deletada com sucesso!'
+            ];
+        }else{
+            http_response_code(400);
+            return [
+                'status' => 'error',
+                'message' => 'Erro ao deletar tarefa'
             ];
         }
 
-        return $response;
-
-       
-       
     }
 
     public function apiClose($id, $request){

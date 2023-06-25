@@ -19,7 +19,7 @@ class User
     {
     
 
-       $sql = 'SELECT name, cpf, email FROM users';
+       $sql = 'SELECT name, cpf, email, if(id_perfil = 1, "executor", "gerente") as perfil FROM users';
      
        $stmt = $this->db->query($sql);
        $list_users = $stmt->fetchAll($this->db::FETCH_ASSOC);
@@ -31,7 +31,7 @@ class User
     {
     
 
-       $sql = 'SELECT name, cpf, email FROM users WHERE id_user = :id_user';
+       $sql = 'SELECT name, cpf, email, if(id_perfil = 1, "executor", "gerente") as perfil FROM users WHERE id_user = :id_user';
      
        $stmt = $this->db->prepare($sql);
        $stmt->bindParam(':id_user', $id);
@@ -42,16 +42,17 @@ class User
         
     }
 
-    public function insert($name, $email, $cpf){
+    public function insert($name, $email, $cpf, $perfil){
  
        
         
-            $sqlInsert = 'INSERT INTO users (name, email, cpf) VALUES (:name, :email, :cpf)';
+            $sqlInsert = 'INSERT INTO users (name, email, cpf, id_perfil) VALUES (:name, :email, :cpf, :perfil)';
    
             $stmt = $this->db->prepare($sqlInsert);
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':cpf', $cpf);
+            $stmt->bindParam(':perfil', $perfil);
 
             $stmt->execute();
 

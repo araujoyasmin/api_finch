@@ -12,32 +12,56 @@ class UserController {
     }
 
     public function post() {
+        try{
+            $postjson = json_decode(file_get_contents('php://input'),true);
         
-        $postjson = json_decode(file_get_contents('php://input'),true);
-        
-        $response = $this->userService->apiPost($postjson);
+            return $this->userService->apiPost($postjson);
 
-        return $response;
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+        
     }
 
     public function get($request = null) {
-      
-        $response = $this->userService->apiGet($request);
+        try{
+            return $this->userService->apiGet($request);
 
-        return $response;
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+        
 
     }
 
     public function put($param) {
-
-        $putJson = json_decode(file_get_contents('php://input'),true);
-        $response = $this->userService->apiPut($param, $putJson);
-        return $response;
+        try{
+            $putJson = json_decode(file_get_contents('php://input'),true);
+            return $this->userService->apiPut($param, $putJson);
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+        
     }
 
     public function delete($param) {
+        try{
+            return $this->userService->apiDelete($param);
+        }catch(Exception $e){
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
         
-        $response = $this->userService->apiDelete($param);
-        return $response;
     }
 }

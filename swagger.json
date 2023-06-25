@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
       "title": "API Finch",
-      "description": "API para gerenciamento de usu�rios, tarefas e projetos",
+      "description": "API para gerenciamento de usuários, tarefas e projetos",
       "version": "1.0.0"
     },
     "paths": {
@@ -23,7 +23,7 @@
               },
               "responses": {
                 "200": {
-                  "description": "Usu�rio encontrado",
+                  "description": "Usuário encontrado",
                   "content": {
                     "application/json": {
                       "schema": {
@@ -33,14 +33,14 @@
                   }
                 },
                 "404": {
-                  "description": "Usu�rio n�o encontrado"
+                  "description": "Usuário n�o encontrado"
                 }
               }
             }
         },
       "/api_finch/user": {
         "get": {
-          "summary": "Lista todos os usu�rios",
+          "summary": "Lista todos os usuários",
           "tags": ["Usuarios"],
           "security": [
             {
@@ -51,13 +51,13 @@
           ],
           "responses": {
             "200": {
-              "description": "Lista de Usu�rios",
+              "description": "Lista de Usuários",
               "content": {
                 "application/json": {
                   "schema": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/Produto"
+                      "$ref": "#/components/schemas/Usuario"
                     }
                   }
                 }
@@ -66,7 +66,7 @@
           }
         },
         "post": {
-          "summary": "Cria um novo usu�rio",
+          "summary": "Cria um novo usuário",
           "tags": ["Usuarios"],
           "security": [
             {
@@ -88,7 +88,7 @@
           },
           "responses": {
             "201": {
-              "description": "Usu�rio cadastrado com sucesso!",
+              "description": "Usuário cadastrado com sucesso!",
               "content": {
                 "application/json": {
                   "schema": {
@@ -101,17 +101,17 @@
                 "description": "Email e/ou CPF ja existem no sistema!"
             },
             "400": {
-                "description": "Erro ao cadastrar o usuario"
+                "description": "Erro ao cadastrar o usuário"
             },
             "422": {
-                "description": "Email e Nome sao obrigatorios!"
+                "description": "Email e Nome sao obrigatórios!"
             }
           }
         }
       },
       "/api_finch/user/{id}": {
         "get": {
-          "summary": "Busca um usu�rio pelo ID",
+          "summary": "Busca um usuário pelo ID",
           "tags": ["Usuarios"],
           "security": [
             {
@@ -126,12 +126,12 @@
               "schema": {
                 "type": "integer"
               },
-              "description": "ID do usu�rio"
+              "description": "ID do usuário"
             }
           ],
           "responses": {
             "200": {
-              "description": "Usu�rio encontrado",
+              "description": "Usuário encontrado",
               "content": {
                 "application/json": {
                   "schema": {
@@ -141,12 +141,12 @@
               }
             },
             "404": {
-              "description": "Usu�rio n�o encontrado"
+              "description": "Usuário n�o encontrado"
             }
           }
         },
         "put": {
-          "summary": "Atualiza um usu�rio existente",
+          "summary": "Atualiza um usuário existente",
           "tags": ["Usuarios"],
           "security": [
             {
@@ -161,7 +161,7 @@
               "schema": {
                 "type": "integer"
               },
-              "description": "ID do Usuario"
+              "description": "ID do Usuário"
             }
           ],
           "requestBody": {
@@ -176,7 +176,7 @@
           },
           "responses": {
             "201": {
-              "description": "Usu�rio atualizado com sucesso",
+              "description": "Usuário atualizado com sucesso",
               "content": {
                 "application/json": {
                   "schema": {
@@ -186,15 +186,15 @@
               }
             },
             "404": {
-              "description": "Usuario n�o encontrado"
+              "description": "Usuario não encontrado"
             },
             "409": {
-                "description": "Email e/ou CPF ja existentes para outro usuario!"
+                "description": "Email e/ou CPF ja existentes para outro usuário!"
               }
           }
         },
         "delete": {
-          "summary": "Exclui um usu�rio",
+          "summary": "Exclui um usuário",
           "tags": ["Usuarios"],
           "security": [
             {
@@ -209,15 +209,15 @@
               "schema": {
                 "type": "integer"
               },
-              "description": "ID do Usu�rio"
+              "description": "ID do Usuário"
             }
           ],
           "responses": {
             "200": {
-              "description": "Usu�rio exclu�do com sucesso"
+              "description": "Usuário exclu�do com sucesso"
             },
             "404": {
-              "description": "Usu�rio n�o encontrado"
+              "description": "Usuário não encontrado"
             }
           }
         }
@@ -248,7 +248,7 @@
               }
             },
             "404": {
-              "description": "Tarefas n�o encontradas"
+              "description": "Tarefas não encontradas"
             }
           }
         },
@@ -285,13 +285,10 @@
               }
             },
             "409": {
-                "description": "Email e/ou CPF ja existem no sistema!"
+                "description": "Data final não pode ser menor que a data corrente."
             },
             "400": {
-                "description": "Erro ao cadastrar o usuario"
-            },
-            "422": {
-                "description": "Email e Nome sao obrigatorios!"
+                "description": "Erro ao cadastrar o tarefa"
             }
           }
         }
@@ -328,7 +325,7 @@
               }
             },
             "404": {
-              "description": "Tarefa n�o encontrada"
+              "description": "Tarefa não encontrada"
             }
           }
         },
@@ -348,7 +345,7 @@
               "schema": {
                 "type": "integer"
               },
-              "description": "ID do Tarefa"
+              "description": "ID da Tarefa"
             }
           ],
           "requestBody": {
@@ -373,10 +370,10 @@
               }
             },
             "404": {
-              "description": "Tarefa n�o encontrada"
+              "description": "Tarefa não encontrada"
             },
             "409": {
-                "description": "Email e/ou CPF ja existentes para outro usuario!"
+                "description": "Data final não pode ser menor que a data corrente."
               }
           }
         },
@@ -396,15 +393,15 @@
               "schema": {
                 "type": "integer"
               },
-              "description": "ID do Tarefa"
+              "description": "ID da Tarefa"
             }
           ],
           "responses": {
             "200": {
-              "description": "Tarefa exclu�da com sucesso"
+              "description": "Tarefa excluída com sucesso"
             },
             "404": {
-              "description": "Tarefa n�o encontrada"
+              "description": "Tarefa não encontrada"
             }
           }
         }
@@ -506,7 +503,7 @@
               }
             },
             "404": {
-              "description": "Projeto n�o encontrado"
+              "description": "Projeto não encontrado"
             }
           }
         },
@@ -551,7 +548,7 @@
               }
             },
             "404": {
-              "description": "Projeto n�o encontrado"
+              "description": "Projeto n�o encontrado"
             },
             "409": {
                 "description": "Tarefas em aberto!"
@@ -579,10 +576,10 @@
           ],
           "responses": {
             "200": {
-              "description": "Projeto exclu�do com sucesso"
+              "description": "Projeto excluído com sucesso"
             },
             "404": {
-              "description": "Projeto n�o encontrado"
+              "description": "Projeto não encontrado"
             }
           }
         }
@@ -619,7 +616,7 @@
           },
           "responses": {
             "201": {
-              "description": "Tarefa conclu�da com sucesso!",
+              "description": "Tarefa concluída com sucesso!",
               "content": {
                 "application/json": {
                   "schema": {
@@ -629,7 +626,7 @@
               }
             },
             "404": {
-              "description": "Tarefa n�o encontrada"
+              "description": "Tarefa n�o encontrada"
             }
           }
         }
@@ -666,7 +663,7 @@
           },
           "responses": {
             "201": {
-              "description": "Projeto conclu�do com sucesso!",
+              "description": "Projeto concluído com sucesso!",
               "content": {
                 "application/json": {
                   "schema": {
@@ -676,7 +673,7 @@
               }
             },
             "404": {
-              "description": "Projeto n�o encontrada"
+              "description": "Projeto não encontrada"
             },
             "409": {
               "description": "Existem tarefas em aberto para esse projeto!"
@@ -692,15 +689,15 @@
           },
         {
           "name": "Usuarios",
-          "description": "Opera��es relacionadas a usuarios"
+          "description": "Operações relacionadas a usuários"
         },
         {
           "name": "Tarefas",
-          "description": "Opera��es relacionadas a tarefas"
+          "description": "Operações relacionadas a tarefas"
         },
         {
           "name": "Projetos",
-          "description": "Opera��es relacionadas a projetos"
+          "description": "Operações relacionadas a projetos"
         }
       ],
     "components": {
@@ -722,7 +719,10 @@
             },
             "email": {
                 "type": "string"
-              }
+              },
+            "id_perfil": {
+              "type": "integer"
+            }
           },
           "required": ["name", "cpf", "email"]
         },
@@ -750,6 +750,10 @@
                 "type": "string"
               },
               "name": {
+                "type": "string"
+              }
+              ,
+              "perfil": {
                 "type": "string"
               }
             }
