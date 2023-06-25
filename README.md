@@ -1,6 +1,6 @@
 # Desafio Dev Finch
 
-API Restful de um sistema para gerenciar projetos.
+API Restfull de um sistema para gerenciar projetos.
 
 # Instalation
 ```bash
