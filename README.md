@@ -2,7 +2,7 @@
 
 API restful de um sistema para gerenciar projetos.
 
-# Instalation
+# Installation
 ```bash
 # clone repository
 $ git clone https://github.com/araujoyasmin/api_finch.git
