@@ -2,11 +2,10 @@
 
 namespace Service;
 
+use Config\Database;
 use Model\Task;
 use Model\Project;
 
-require_once('./App/models/Task.php');
-require_once('./App/models/Project.php');
 
 class TaskService{
 

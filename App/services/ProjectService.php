@@ -2,9 +2,8 @@
 
 namespace Service;
 
+use Config\Database;
 use Model\Project;
-
-require_once('./App/models/Project.php');
 
 class ProjectService{
 

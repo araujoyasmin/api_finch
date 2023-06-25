@@ -2,9 +2,9 @@
 
 namespace Service;
 
+use Config\Database;
 use Model\User;
 
-require_once('./App/models/User.php');
 
 class UserService{
 

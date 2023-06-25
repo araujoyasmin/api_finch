@@ -1,12 +1,11 @@
 <?php
-
 namespace Config;
 class Database
 {
     private static $instance;
     private $db;
 
-    private function __construct()
+    public function __construct()
     {
         $this->db = $this->setDB();
     }

@@ -1,14 +1,7 @@
 <?php
-
 namespace Model;
 
-use InvalidArgumentException;
-use PDO;
-use PDOException;
-
 use Config\Database;
-
-// require_once ('./App/config/database.php');
 
 class User
 {
@@ -18,7 +11,7 @@ class User
     
     public function __construct()
     {
-        $database = Database::getInstance();
+        $database = new Database();
         $this->db = $database->getDb();
     }
 

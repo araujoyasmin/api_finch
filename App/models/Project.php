@@ -1,5 +1,4 @@
 <?php
-
 namespace Model;
 
 use InvalidArgumentException;
@@ -8,7 +7,6 @@ use PDOException;
 
 use Config\Database;
 
-require_once ('./App/config/database.php');
 
 class Project
 {
@@ -17,7 +15,7 @@ class Project
     
     public function __construct()
     {
-        $database = Database::getInstance();
+        $database = new Database();
         $this->db = $database->getDb();
     }
 
