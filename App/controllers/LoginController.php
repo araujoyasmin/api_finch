@@ -58,22 +58,24 @@ class LoginController{
 
     public function checkAuth(){
         $headers = apache_request_headers();
-        $token = $headers['Authorization'] ?? '';
+        $token_b = $headers['Authorization'] ?? '';
+        $token = str_replace('Bearer ', '', $token_b);
+        // print_r($token);exit;
         if (!empty($token)) {
-            // Verifique o token e obtenha os dados do usuário
+            // Verifique o token e obtenha os dados do usuï¿½rio
             $decodedToken = self::verifyToken($token);
             if ($decodedToken) {
-                // O token é válido
+                // O token ï¿½ vï¿½lido
                 $request['user'] = $decodedToken->sub;
                 $request['perfil'] = $decodedToken->perfil;
                 
                 return $request;
             } else {
-                // O token é inválido ou expirado
+                // O token ï¿½ invï¿½lido ou expirado
                 return false;
             }
         } else {
-            // Token não fornecido
+            // Token nï¿½o fornecido
            return false;
         }
     }
@@ -89,7 +91,7 @@ class LoginController{
             $isValidSignature = hash_hmac('sha256', "$tokenParts[0].$tokenParts[1]", $secretKey, true) === base64_decode($tokenParts[2]);
             
             if ($isValidSignature) {
-                // Verifique a validade do token (data de expiração, por exemplo)
+                // Verifique a validade do token (data de expiraï¿½ï¿½o, por exemplo)
                 $currentTime = time();
                 if ($decodedToken->exp >= $currentTime) {
                     return $decodedToken;

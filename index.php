@@ -21,9 +21,7 @@ $routes = new Routes($loginController);
 
 try {
     $response = $routes->getRoutes(); 
-    echo json_encode([
-        'data' => $response
-    ]);
+    echo json_encode($response);
 } catch (\Exception $error) {
     echo json_encode([
         'status' => 'error',

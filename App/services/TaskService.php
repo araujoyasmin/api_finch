@@ -29,6 +29,7 @@ class TaskService{
        }
 
         if($tasks){
+            http_response_code(200); 
             return $tasks;
         }else{
             $error = [
@@ -57,7 +58,7 @@ class TaskService{
                 'error' => 'invalid_task_deadline',
                 'message' => 'O prazo final da tarefa nao pode ser menor que a data corrente'
             ];
-            http_response_code(400); 
+            http_response_code(409); 
             return ($error);
         }
 
@@ -68,13 +69,14 @@ class TaskService{
                 'error' => 'invalid_task_deadline',
                 'message' => 'O prazo final da tarefa nao pode ser maior que o prazo final do projeto!'
             ];
-            http_response_code(400); 
+            http_response_code(409); 
             return ($error);
         }
     
         $response = $this->task->insert($id_project, $id_user, $title, $description, $final_date);
     
         if($response){
+            http_response_code(201);
             return [
                 'status' => 'success',
                 'message' => 'Tarefa cadastrada com sucesso!'
@@ -117,7 +119,7 @@ class TaskService{
                 'error' => 'invalid_task_deadline',
                 'message' => 'O prazo final da tarefa nao pode ser menor que a data corrente'
             ];
-            http_response_code(400); 
+            http_response_code(409); 
             return ($error);
         }
 
@@ -128,13 +130,14 @@ class TaskService{
                 'error' => 'invalid_task_deadline',
                 'message' => 'O prazo final da tarefa nao pode ser maior que o prazo final do projeto!'
             ];
-            http_response_code(400); 
+            http_response_code(409); 
             return ($error);
         }
         
         $response = $this->task->update($id, $request);
 
         if($response){
+            http_response_code(201);
             return [
                 'status' => 'success',
                 'message' => 'Tarefa editada com sucesso!'
@@ -173,12 +176,20 @@ class TaskService{
         $status = $request['status'];
         
         $response = $this->task->updateStatus($id, $status);
-
-        if($response === null){
-            throw new \InvalidArgumentException('Nenhum registro encontrado');
+        
+        if($response){
+            http_response_code(201);
+            return [
+                'status' => 'success',
+                'message' => 'Tarefa editada com sucesso!'
+            ];
+        }else{
+            http_response_code(400);
+            return [
+                'status' => 'error',
+                'message' => 'Erro ao editar tarefa'
+            ];
         }
-
-        return $response;
 
        
        

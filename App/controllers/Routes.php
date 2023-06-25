@@ -31,7 +31,7 @@ class Routes{
         if(isset($_GET['path'])){
             $path = explode("/", $_GET['path']);
         }else{
-            echo "Rota não informada!";exit;
+            echo "Rota nï¿½o informada!";exit;
         }
 
         $request = [];
@@ -47,7 +47,6 @@ class Routes{
         }else{
             if($authenticate = $this->loginController->checkAuth()){
                 $route = array_merge($request, $authenticate);
-                // print_r($route);exit;
                 $response_api = $this->getApi($route);
                 return $response_api;
             }else {

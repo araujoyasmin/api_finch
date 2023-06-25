@@ -25,6 +25,7 @@ class ProjectService{
        }
 
        if($projects){
+            http_response_code(200); 
             return $projects;
         }else{
             $error = [
@@ -45,21 +46,48 @@ class ProjectService{
 
        
         $response =  $this->project->insert($name, $final_date);
-        return $response;
+        if($response){
+            http_response_code(201);
+            return [
+                'status' => 'success',
+                'message' => 'Projeto cadastrado com sucesso!'
+            ];
+        }else{
+            http_response_code(400);
+            return [
+                'status' => 'error',
+                'message' => 'Erro ao cadastrar o projeto'
+            ];
+        }
        
       
     }
 
 
     public function apiPut($id, $request){
-        
-        $response = $this->project->update($id, $request);
 
-        if($response === null){
-            throw new \InvalidArgumentException('Nenhum registro encontrado');
+        $project = $this->apiGet($id);
+        if (!array_key_exists('error', $project)){
+            $name = $request['name'];
+            $final_date = $request['final_date'];
+
+            $response = $this->project->update($id, $name, $final_date, $project);
+            if($response){
+                http_response_code(201); 
+                return [
+                    'status' => 'success',
+                    'message' => 'Projeto editado com sucesso!'
+                ];
+            }else{
+                http_response_code(400); 
+                return [
+                    'status' => 'error',
+                    'message' => 'Nenhuma linha afetada!'
+                ];
+            }
         }
-
-        return $response;
+     
+        return $project;
 
        
        
@@ -69,36 +97,58 @@ class ProjectService{
         
         $response = $this->project->delete($id);
 
-        if($response === null){
-            http_response_code(404);
+        if($response){
+            http_response_code(201); 
             return [
-                'status' => 'not_found',
-                'message' => 'Projeto nao encontrado!'
+                'status' => 'success',
+                'message' => 'Projeto deletado com sucesso!'
+            ];
+        }else{
+            http_response_code(400); 
+            return [
+                'status' => 'error',
+                'message' => 'Nenhuma linha afetada!'
             ];
         }
-
-        return $response;
 
     }
 
     public function apiClose($id, $request){
 
         $status = $request['status'];
-        
-        $response = $this->project->updateStatus($id, $status);
 
-        if($response === null){
-            http_response_code(404);
-            return [
-                'status' => 'not_found',
-                'message' => 'Projeto nao encontrado!'
+        $verifyTask = $this->verifyTask($id);
+
+        if($verifyTask){
+            $error = [
+                'error' => 'denied',
+                'message' => 'Existem tarefas em aberto para esse projeto!'
             ];
+            http_response_code(409); 
+            return ($error);
+        }else{
+            $response = $this->project->updateStatus($id, $status);
+            if($response){
+                http_response_code(201);
+                return [
+                    'status' => 'success',
+                    'message' => 'Projeto finalizado com sucesso!'
+                ];
+            }else{
+                http_response_code(400);
+                return [
+                    'status' => 'error',
+                    'message' => 'Projeto nao encontrado!'
+                ];
+            }
         }
 
-        return $response;
+       
+    }
 
-       
-       
+    public function verifyTask($id){
+        return $this->project->verifyTask($id);
+
     }
 
 

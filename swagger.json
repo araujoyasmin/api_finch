@@ -1,0 +1,853 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "API Finch",
+      "description": "API para gerenciamento de usuários, tarefas e projetos",
+      "version": "1.0.0"
+    },
+    "paths": {
+        "/api_finch/login": {
+            "post": {
+              "summary": "Login",
+              "parameters": [ ],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Login"
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "Usuário encontrado",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Login"
+                      }
+                    }
+                  }
+                },
+                "404": {
+                  "description": "Usuário não encontrado"
+                }
+              }
+            }
+        },
+      "/api_finch/user": {
+        "get": {
+          "summary": "Lista todos os usuários",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+          ],
+          "responses": {
+            "200": {
+              "description": "Lista de Usuários",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Produto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Cria um novo usuário",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+            
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NovoUsuario"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Usuário cadastrado com sucesso!",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Usuario"
+                  }
+                }
+              }
+            },
+            "409": {
+                "description": "Email e/ou CPF ja existem no sistema!"
+            },
+            "400": {
+                "description": "Erro ao cadastrar o usuario"
+            },
+            "422": {
+                "description": "Email e Nome sao obrigatorios!"
+            }
+          }
+        }
+      },
+      "/api_finch/user/{id}": {
+        "get": {
+          "summary": "Busca um usuário pelo ID",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "ID do usuário"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Usuário encontrado",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Usuario"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Usuário não encontrado"
+            }
+          }
+        },
+        "put": {
+          "summary": "Atualiza um usuário existente",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "ID do Usuario"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtualizaUsuario"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Usuário atualizado com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Usuario"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Usuario não encontrado"
+            },
+            "409": {
+                "description": "Email e/ou CPF ja existentes para outro usuario!"
+              }
+          }
+        },
+        "delete": {
+          "summary": "Exclui um usuário",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "ID do Usuário"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Usuário excluído com sucesso"
+            },
+            "404": {
+              "description": "Usuário não encontrado"
+            }
+          }
+        }
+      },
+      "/api_finch/task": {
+        "get": {
+          "summary": "Lista todos as tarefas",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+          ],
+          "responses": {
+            "200": {
+              "description": "Lista de Tarefas",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Tarefa"
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Tarefas não encontradas"
+            }
+          }
+        },
+        "post": {
+          "summary": "Cria uma nova tarefa",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+            
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NovaTarefa"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Tarefa cadastrada com sucesso!",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Tarefa"
+                  }
+                }
+              }
+            },
+            "409": {
+                "description": "Email e/ou CPF ja existem no sistema!"
+            },
+            "400": {
+                "description": "Erro ao cadastrar o usuario"
+            },
+            "422": {
+                "description": "Email e Nome sao obrigatorios!"
+            }
+          }
+        }
+      },
+      "/api_finch/task/{id}": {
+        "get": {
+          "summary": "Busca um tarefa pelo ID",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "ID da tarefa"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Tarefa encontrada",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Tarefa"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Tarefa não encontrada"
+            }
+          }
+        },
+        "put": {
+          "summary": "Atualiza um tarefa existente",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "ID do Tarefa"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtualizaTarefa"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Tarefa atualizada com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Tarefa"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Tarefa não encontrada"
+            },
+            "409": {
+                "description": "Email e/ou CPF ja existentes para outro usuario!"
+              }
+          }
+        },
+        "delete": {
+          "summary": "Exclui uma tarefa",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "ID do Tarefa"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Tarefa excluída com sucesso"
+            },
+            "404": {
+              "description": "Tarefa não encontrada"
+            }
+          }
+        }
+      },
+      "/api_finch/project": {
+        "get": {
+          "summary": "Lista todos os projetos",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+          ],
+          "responses": {
+            "200": {
+              "description": "Lista de Projetos",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Projeto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Cria um novo projeto",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+            
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NovoProjeto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Projeto cadastrado com sucesso!",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Projeto"
+                  }
+                }
+              }
+            },
+            "400": {
+                "description": "Erro ao cadastrar o projeto"
+            }
+          }
+        }
+      },
+      "/api_finch/project/{id}": {
+        "get": {
+          "summary": "Busca um projeto pelo ID",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "ID do projeto"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Projeto encontrado",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Projeto"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Projeto não encontrado"
+            }
+          }
+        },
+        "put": {
+          "summary": "Atualiza um projeto existente",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "ID do Projeto"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtualizaProjeto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Projeto atualizado com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Projeto"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Projeto não encontrado"
+            },
+            "409": {
+                "description": "Tarefas em aberto!"
+              }
+          }
+        },
+        "delete": {
+          "summary": "Exclui um projeto",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "ID do Projeto"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Projeto excluído com sucesso"
+            },
+            "404": {
+              "description": "Projeto não encontrado"
+            }
+          }
+        }
+      },
+      "/api_finch/close-task/{id}": {
+        "patch": {
+          "summary": "Finalizar tarefa",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "ID da Tarefa"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinalizarTarefa"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Tarefa concluída com sucesso!",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Tarefa"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Tarefa não encontrada"
+            }
+          }
+        }
+      },
+      "/api_finch/close-project/{id}": {
+        "patch": {
+          "summary": "Finalizar projeto",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+        ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "ID da Projeto"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinalizarProjeto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Projeto concluído com sucesso!",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Projeto"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Projeto não encontrada"
+            },
+            "409": {
+              "description": "Existem tarefas em aberto para esse projeto!"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        },
+      "schemas": {
+        "NovoUsuario": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "cpf": {
+              "type": "string"
+            },
+            "email": {
+                "type": "string"
+              }
+          },
+          "required": ["name", "cpf", "email"]
+        },
+        "AtualizaUsuario": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "cpf": {
+              "type": "string"
+            },
+            "email": {
+                "type": "string"
+              }
+          }
+        },
+        "Usuario": {
+            "type": "object",
+            "properties": {
+              "cpf": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "Login": {
+            "type": "object",
+            "properties": {
+              "cpf": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              }
+            }
+          },
+          "Tarefa": {
+            "type": "object",
+            "properties": {
+              "id_task": {
+                "type": "integer"
+              },
+              "name_projeto": {
+                "type": "string"
+              },
+              "user_name": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "final_date": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
+            }
+          },
+          "NovaTarefa": {
+            "type": "object",
+            "properties": {
+              "id_project": {
+                "type": "integer"
+              },
+              "id_user": {
+                "type": "integer"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "final_date": {
+                "type": "string"
+              }
+            }
+          },
+        "AtualizaTarefa": {
+          "type": "object",
+          "properties": {
+            "id_project": {
+              "type": "integer"
+            },
+            "id_user": {
+              "type": "integer"
+            },
+            "title": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "final_date": {
+                "type": "string"
+            }
+          }
+        },
+        "Projeto": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "final_date": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
+            }
+          },
+          "NovoProjeto": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "final_date": {
+                "type": "string"
+              }
+            }
+          },
+          "AtualizaProjeto": {
+            "type": "object",
+            "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "final_date": {
+                  "type": "string"
+                }
+              }
+          },
+          "FinalizarTarefa": {
+            "type": "object",
+            "properties": {
+                "status": {
+                  "type": "integer"
+                }
+              }
+          },
+          "FinalizarProjeto": {
+            "type": "object",
+            "properties": {
+                "status": {
+                  "type": "integer"
+                }
+              }
+          }
+      }
+    }
+  }
+  

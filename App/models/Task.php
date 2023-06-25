@@ -7,7 +7,7 @@ use PDO;
 use PDOException;
 
 use Config\Database;
-require_once ('./App/config/database.php');
+// require_once ('./App/config/database.php');
 
 class Task
 {
@@ -134,20 +134,9 @@ class Task
         $stmt->bindParam(':status', $status);
         try {
             $stmt->execute();
-            // Verifica se a consulta foi executada corretamente
-            if ($stmt->rowCount() > 0) {
-                return [
-                    'status' => 'success',
-                    'message' => 'Status atualizado com sucesso!'
-                ];
-            } else {
-                return [
-                    'status' => 'error',
-                    'message' => 'Nenhuma linha afetada!'
-                ];
-            }
+            return $stmt->rowCount() > 0 ? true : false;
         } catch (\Exception $error) {
-            http_response_code(500);
+            http_response_code(400);
             
             return [
                 'status' => 'error',
@@ -155,11 +144,5 @@ class Task
             ];
         }
     }
-    
-    public function getDb()
-
-    {
-     
-        return $this->db;
-    }
+  
 }

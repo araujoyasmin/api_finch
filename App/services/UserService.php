@@ -58,6 +58,7 @@ class UserService{
             }else{
                 $retorno =  $this->user->insert($name, $email, $cpf);
                 if($retorno){
+                    http_response_code(201);
                     return [
                         'status' => 'success',
                         'message' => 'Usuario cadastrado com sucesso!'
@@ -73,9 +74,9 @@ class UserService{
         }
         $error = [
             'error' => 'denied',
-            'message' => 'Email e Nome são obrigatorios!'
+            'message' => 'Email e Nome sao obrigatorios!'
         ];
-        http_response_code(400); 
+        http_response_code(422); 
         return ($error);
       
     }
@@ -109,12 +110,13 @@ class UserService{
                     'error' => 'denied',
                     'message' => 'Email e/ou CPF ja existentes para outro usuario!'
                 ];
-                http_response_code(400); 
+                http_response_code(409); 
                 return $error;
             } 
 
             $user = $this->user->update($id, $name, $email, $cpf,$user);
             if($user){
+                http_response_code(201); 
                 return [
                     'status' => 'success',
                     'message' => 'Usuario editado com sucesso!'
@@ -153,7 +155,7 @@ class UserService{
                 'error' => 'not_found',
                 'message' => 'Usuario nao encontrado!'
             ];
-            http_response_code(409); 
+            http_response_code(404); 
             return ($error);
         }
 

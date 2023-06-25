@@ -8,7 +8,7 @@ use PDOException;
 
 use Config\Database;
 
-require_once ('./App/config/database.php');
+// require_once ('./App/config/database.php');
 
 class User
 {
@@ -119,7 +119,7 @@ class User
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':cpf', $cpf);
         $stmt->execute();
-
+        // $stmt->debugDumpParams();exit;
         return $stmt->rowCount() > 0 ? true : false;
 
     }
